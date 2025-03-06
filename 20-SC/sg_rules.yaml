@@ -1,0 +1,9 @@
+- name: SG Rules
+  sg:
+  - public_expense:
+    desc: public access
+    port: 80, 443, 22, 1194, 3306, 8080
+  - private_expense:
+    desc: private access
+    port: 80, 443, 22, 1194, 3306, 8080
+  
