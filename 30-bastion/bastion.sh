@@ -20,34 +20,26 @@ VALIDATE(){
     fi
 }
 
-if [ $USERID -ne 0 ]
-then
-    echo "Please run this script with root access."
-    exit 1 # manually exit if error comes.
-else
-    echo "You are super user."
-fi
-
 # docker
-yum install -y yum-utils
-yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-yum install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
-systemctl start docker
-systemctl enable docker
-usermod -aG docker ec2-user
+sudo yum install -y yum-utils
+sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+sudo yum install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+sudo systemctl start docker
+sudo systemctl enable docker
+sudo usermod -aG docker ec2-user
 VALIDATE $? "Docker installation"
 
-dnf install mysql -y # as we are using RDS it is fully managed by AWS so no SSH to access from bastion we need mysql on bastion
+sudo dnf install mysql -y # as we are using RDS it is fully managed by AWS so no SSH to access from bastion we need mysql on bastion
 
 # kubectl
 curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.30.0/2024-05-12/bin/linux/amd64/kubectl
 chmod +x ./kubectl
-mv kubectl /usr/local/bin/kubectl
+sudo mv kubectl /usr/local/bin/kubectl
 VALIDATE $? "kubectl installation"
 
 # eksctl
 curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
-mv /tmp/eksctl /usr/local/bin
+sudo mv /tmp/eksctl /usr/local/bin
 eksctl version
 VALIDATE $? "eksctl installation"
 
@@ -58,13 +50,13 @@ chmod 700 get_helm.sh
 VALIDATE $? "helm installation"
 
 #Terraform
-yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
-yum -y install terraform
+sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+sudo yum -y install terraform
 VALIDATE $? "Terraform installation"
 
 #Nodejs
-dnf module disable nodejs -y
-dnf module enable nodejs:20 -y
-dnf install nodejs -y
-yum install zip -y
+sudo dnf module disable nodejs -y
+sudo dnf module enable nodejs:20 -y
+sudo dnf install nodejs -y
+sudo yum install zip -y
 
