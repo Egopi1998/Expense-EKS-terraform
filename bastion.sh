@@ -60,3 +60,5 @@ sudo dnf module enable nodejs:20 -y
 sudo dnf install nodejs -y
 sudo yum install zip -y
 
+# To configure the aws eks cluster
+Aws eks update-kubeconfig  --region us-east-a --name expense-dev
