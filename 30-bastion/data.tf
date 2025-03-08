@@ -1,4 +1,4 @@
-data "aws_ssm_parameter" "public" {
+data "aws_ssm_parameter" "public_sg_id" {
   name = "/${var.project_name}/${var.environment}/public_sg_id"
 }
 

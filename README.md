@@ -3,6 +3,11 @@
 ```
 curl -o https://github.com/Egopi1998/Expense-EKS-terraform/blob/main/bastion.sh
 ```
+* create password authentication between jenkins and Bastion
+```
+ssh-keygen -t rsa -b 4096
+ssh-copy-id -i ~/.ssh/id_rsa.pub user@destination-server
+```
 * run command to configure the eks
 ```
 Aws eks update-kubeconfig  --region us-east-a --name expense-dev

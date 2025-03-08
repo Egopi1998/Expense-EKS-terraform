@@ -37,7 +37,7 @@ module "private" {
   common_tags = var.common_tags
   sg_name = "private"
   ingress_rules = [
-    { # allow all traffic from VPC
+    {  # EKS nodes should accept all traffic from nodes with in VPC CIDR range. #cluster to node communication
       from_port = 0
       to_port = 65535
       protocol = "tcp" #accept all protocols
@@ -64,7 +64,7 @@ resource "aws_security_group_rule" "private-private" {
   source_security_group_id = module.public.sg_id # from where traffic is coming from
 } */
 # private sg accepting traffic from public sg on port 80 because we are creating a load balancer with public sg
-resource "aws_security_group_rule" "private-private_https" {
+resource "aws_security_group_rule" "private-public_https" {
   type                     = "ingress"
   from_port                = 80
   to_port                  = 80
@@ -72,8 +72,16 @@ resource "aws_security_group_rule" "private-private_https" {
   security_group_id        = module.private.sg_id
   source_security_group_id = module.public.sg_id # from where traffic is coming from
 }
+resource "aws_security_group_rule" "private-public_db" {
+  type                     = "ingress"
+  from_port                = 3306
+  to_port                  = 3306
+  protocol                 = "tcp"
+  security_group_id        = module.private.sg_id
+  source_security_group_id = module.public.sg_id # from where traffic is coming from
+}
 # private sg accepting traffic from public sg on port 443 because we are creating a load balancer with public sg, also to allow traffic from public bastion to k8s api
-resource "aws_security_group_rule" "private-private_K8s_api_https" {
+resource "aws_security_group_rule" "private-public_K8s_api_https" {
   type                     = "ingress"
   from_port                = 443
   to_port                  = 443
@@ -82,5 +90,12 @@ resource "aws_security_group_rule" "private-private_K8s_api_https" {
   source_security_group_id = module.public.sg_id # from where traffic is coming from
 }
 
-
+resource "aws_security_group_rule" "public_default_vpc_sg_id_jenkins" {
+  type                     = "ingress"
+  from_port                = 22
+  to_port                  = 22
+  protocol                 = "tcp"
+  security_group_id        = data.aws_security_group.default_vpc_sg_id.id
+  source_security_group_id = module.public.sg_id # from where traffic is coming from
+}
 
