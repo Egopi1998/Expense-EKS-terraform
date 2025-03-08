@@ -5,7 +5,7 @@ module "public" {
   sg_description = "SG for Bastion and public access"
   vpc_id = data.aws_ssm_parameter.vpc_id.value
   common_tags = var.common_tags
-  sg_name = "public_${var.project_name}"
+  sg_name = "public"
   ingress_rules = [
     {
       from_port = 22
@@ -35,7 +35,7 @@ module "private" {
   sg_description = "SG for private resources"
   vpc_id = data.aws_ssm_parameter.vpc_id.value
   common_tags = var.common_tags
-  sg_name = "private_${var.project_name}"
+  sg_name = "private"
   ingress_rules = [
     { # allow all traffic from VPC
       from_port = 0
@@ -54,16 +54,17 @@ resource "aws_security_group_rule" "private-private" {
   security_group_id        = module.private.sg_id
   source_security_group_id = module.private.sg_id # ✅ Allow traffic within the same SG
 }
-# private sg accepting traffic from public sg
-resource "aws_security_group_rule" "private-private" {
+# private sg accepting traffic from public sg on node port range
+/* resource "aws_security_group_rule" "public-private_node_port" {
   type                     = "ingress"
   from_port                = 30000
   to_port                  = 32767
   protocol                 = "tcp"
   security_group_id        = module.private.sg_id
   source_security_group_id = module.public.sg_id # from where traffic is coming from
-}
-resource "aws_security_group_rule" "private-private" {
+} */
+# private sg accepting traffic from public sg on port 80 because we are creating a load balancer with public sg
+resource "aws_security_group_rule" "private-private_https" {
   type                     = "ingress"
   from_port                = 80
   to_port                  = 80
@@ -71,7 +72,8 @@ resource "aws_security_group_rule" "private-private" {
   security_group_id        = module.private.sg_id
   source_security_group_id = module.public.sg_id # from where traffic is coming from
 }
-resource "aws_security_group_rule" "private-private" {
+# private sg accepting traffic from public sg on port 443 because we are creating a load balancer with public sg, also to allow traffic from public bastion to k8s api
+resource "aws_security_group_rule" "private-private_K8s_api_https" {
   type                     = "ingress"
   from_port                = 443
   to_port                  = 443
@@ -79,5 +81,6 @@ resource "aws_security_group_rule" "private-private" {
   security_group_id        = module.private.sg_id
   source_security_group_id = module.public.sg_id # from where traffic is coming from
 }
+
 
 
