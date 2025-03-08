@@ -1,7 +1,7 @@
 # Expense-EKS-terraform
 * Install tools from bastion.sh 
 ```
-curl -o 
+curl -o https://github.com/Egopi1998/Expense-EKS-terraform/blob/main/bastion.sh
 ```
 * run command to configure the eks
 ```
