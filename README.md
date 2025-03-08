@@ -6,7 +6,7 @@ curl -o https://github.com/Egopi1998/Expense-EKS-terraform/blob/main/bastion.sh
 * create password authentication between jenkins and Bastion
 ```
 ssh-keygen -t rsa -b 4096
-ssh-copy-id -i ~/.ssh/id_rsa.pub user@destination-server
+ssh-copy-id -i ~/.ssh/id_rsa.pub ec2-user@jenkins.hellandhaven.xyz
 ```
 * run command to configure the eks
 ```
@@ -14,7 +14,7 @@ Aws eks update-kubeconfig  --region us-east-a --name expense-dev
 ```
 * access the DB and configure as it is one time task 
 ```
-mysql -h db-dev.daws78s.online -u root -pExpenseApp1
+mysql -h db-dev.hellandhaven.xyz -u root -pExpenseApp1
 ```
 ```
 USE transactions;
