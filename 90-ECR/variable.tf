@@ -14,6 +14,6 @@ variable "common_tags" {
   }
 }
 variable "Component" {
-  type = list(String)
+  type = list
   default = [ "backend", "frontend" ]
 }

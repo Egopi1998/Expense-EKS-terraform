@@ -55,14 +55,14 @@ resource "aws_security_group_rule" "private-private" {
   source_security_group_id = module.private.sg_id # ✅ Allow traffic within the same SG
 }
 # private sg accepting traffic from public sg on node port range
-/* resource "aws_security_group_rule" "public-private_node_port" {
+resource "aws_security_group_rule" "public-private_node_port" {
   type                     = "ingress"
   from_port                = 30000
   to_port                  = 32767
   protocol                 = "tcp"
   security_group_id        = module.private.sg_id
   source_security_group_id = module.public.sg_id # from where traffic is coming from
-} */
+}
 # private sg accepting traffic from public sg on port 80 because we are creating a load balancer with public sg
 resource "aws_security_group_rule" "private-public_https" {
   type                     = "ingress"
@@ -96,6 +96,15 @@ resource "aws_security_group_rule" "public_default_vpc_sg_id_jenkins" {
   to_port                  = 22
   protocol                 = "tcp"
   security_group_id        = data.aws_security_group.default_vpc_sg_id.id
+  source_security_group_id = module.public.sg_id # from where traffic is coming from
+}
+# for communication between bastion and aws ALB
+resource "aws_security_group_rule" "public_public" {
+  type                     = "ingress"
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "tcp"
+  security_group_id        = module.public.sg_id
   source_security_group_id = module.public.sg_id # from where traffic is coming from
 }
 

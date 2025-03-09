@@ -1,5 +1,4 @@
 #!/bin/bash
-#!/bin/bash
 
 USERID=$(id -u)
 TIMESTAMP=$(date +%F-%H-%M%S)
@@ -61,4 +60,3 @@ sudo dnf install nodejs -y
 sudo yum install zip -y
 
 # To configure the aws eks cluster
-Aws eks update-kubeconfig  --region us-east-a --name expense-dev

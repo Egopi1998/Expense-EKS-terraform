@@ -1,7 +1,8 @@
 # Expense-EKS-terraform
 * Install tools from bastion.sh 
 ```
-curl -o https://github.com/Egopi1998/Expense-EKS-terraform/blob/main/bastion.sh
+wget -O bastion.sh https://raw.githubusercontent.com/Egopi1998/Expense-EKS-terraform/main/bastion.sh
+
 ```
 * create password authentication between jenkins and Bastion
 ```
@@ -10,7 +11,7 @@ ssh-copy-id -i ~/.ssh/id_rsa.pub ec2-user@jenkins.hellandhaven.xyz
 ```
 * run command to configure the eks
 ```
-Aws eks update-kubeconfig  --region us-east-a --name expense-dev
+Aws eks update-kubeconfig  --region us-east-1 --name expense-dev
 ```
 * access the DB and configure as it is one time task 
 ```
@@ -59,12 +60,30 @@ eksctl create iamserviceaccount \
 --override-existing-serviceaccounts \
 --approve
 ```
+* Add the eks-charts Helm chart repository.
 ```
-helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=expense-dev
+helm repo add eks https://aws.github.io/eks-charts
+```
+* Update your local repo to make sure that you have the most recent charts.
+```
+helm repo update eks
+```
+* install controller
+```
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
+  -n kube-system \
+  --set clusterName=expense-dev \
+  --set serviceAccount.create=false \
+  --set serviceAccount.name=aws-load-balancer-controller
 ```
 * To check ingress controller pods running or not
 ```
 kubectl get pods -n kube-system
+or 
+kubectl get deployment -n kube-system aws-load-balancer-controller
 ```
-
+*  to uninstall
+```
+helm uninstall aws-load-balancer-controller -n kube-system
+```
 
