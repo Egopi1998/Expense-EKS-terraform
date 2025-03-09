@@ -11,7 +11,7 @@ ssh-copy-id -i ~/.ssh/id_rsa.pub ec2-user@jenkins.hellandhaven.xyz
 ```
 * run command to configure the eks
 ```
-Aws eks update-kubeconfig  --region us-east-1 --name expense-dev
+aws eks update-kubeconfig  --region us-east-1 --name expense-dev
 ```
 * access the DB and configure as it is one time task 
 ```
